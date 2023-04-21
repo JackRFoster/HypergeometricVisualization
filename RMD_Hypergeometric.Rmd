@@ -1,0 +1,51 @@
+---
+title: "Hypergeometric distribution visualization"
+author: "Jack Foster"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(plot3D)
+```
+This is a two Dimensional Hypergeometric distribution where the number of successes are plotted against the probability for the given number of successes.
+```{r}
+Population_Succsesses <- 40
+Population_Failures <- 59
+Sample_Size <-7
+d <- data.frame(
+  y = 0:Sample_Size
+) %>%
+  mutate(pmf = dhyper(y, Population_Succsesses, 
+                      Population_Failures, Sample_Size))
+
+ggplot(d, aes(x = y, y = pmf, yend = 0, xend = y)) +
+  geom_segment(linewidth = 10, lineend = "butt", color = 'pink')
+```
+This is the same distribution, but this time visualized in 3 dimensions as the number of poplulation successes is also varied.
+```{r}
+#define x and y
+x <- 0:7
+y <- 33:40
+
+#define function to create z-values
+z_values <- function(x, y) {
+  dhyper(x, y, 99-y, 7)
+}
+
+#create z-values
+z = outer(x, y, z_values)
+
+#create 3D plot
+persp(x, y, z, xlab='X Variable', ylab='Y Variable', zlab='Z Variable',
+      main='3D Plot', col='red', shade=.4, theta = 30, phi = 15)
+```
+
+
+
+
